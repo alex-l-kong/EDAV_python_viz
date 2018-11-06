@@ -48,13 +48,13 @@ You may also need to install certain Python libraries before running certain Mar
 
 These lines are needed to ensure the right Python (or just any Python in general) runs with RStudio.  
   
-One more thing: I've been struggling to get rpy2 to work, so for the time being I've written the respective R datasets to files, and reading from them subsequently in Python. rpy2 offers a very neat interface from R to Python. I haven't played around with it too much, and I'm not sure if it supports Python 3. If someone could get that working, that would be truly awesome!  
-  
 The files are located in the ```files``` directory, while the R markdown files should go in the ```markdown``` directory. Most of the examples I've used are taken directly from the EDAV website, translated to Python.  
   
 You run the Markdown files as we've learned in class. Hopefully at this point you know what they are and how they work.  
   
 RStudio Python blocks don't exactly work like Jupyter notebooks. For one, you actually need to call plt.show(). Also, be careful with chart formatting; be sure to call plt.clf() before each Python block!  
+
+One more thing: I've been struggling to get rpy2 to work, so for the time being I've written the respective R datasets to files, and reading from them subsequently in Python. rpy2 offers a very neat interface from R to Python. I haven't played around with it too much, and I'm not sure if it supports Python 3. If someone could get that working, that would be truly awesome!  
   
 Well, that's pretty much it! As mentioned earlier, if you have any issues getting Python set up/interfacing Python with RStudio/etc., please feel free to [email](#contact) me!  
   
