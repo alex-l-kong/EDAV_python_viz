@@ -1,0 +1,136 @@
+---
+title: "Histograms"
+author: "Alex Kong (alk2225)"
+date: "11/5/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE, tidy=FALSE)
+```
+
+```{r}
+require(tidyverse)
+require(reticulate)
+path_to_python <- "/Library/Frameworks/Python.framework/Versions/3.7/bin/python3"
+use_python(path_to_python, required=TRUE)
+```
+
+Again, duplicate some of the graphs we saw on EDAV:
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+plt.clf()
+
+x = [50, 51, 53, 55, 56, 60, 65, 65, 68]
+plt.hist(x, bins=np.arange(50, 75, 5))
+plt.xticks(np.arange(50, 75, 5))
+plt.yticks(np.arange(0, 5, 1))
+plt.show()
+```
+
+As you can see, histograms in matplotlib are default left closed. Right closed histograms are a little harder to get. Unfortunately, matplotlib's histogram function is built off of numpy's histogram function, which is default right closed. I haven't been able to find any easy way to change this yet, though using a simple hack, I was able to (kind of) duplicate right closed (I absolutely don't recommend this in real-life):
+
+```{python}
+plt.clf()
+
+force_right_x = [meas - .1 if meas % 5 == 0 else meas for meas in x] # subtract a small value from all elements that fall on the boundary
+print(force_right_x)
+
+plt.hist(force_right_x, bins=np.arange(45, 75, 5))
+plt.xticks(np.arange(50, 75, 5))
+plt.yticks(np.arange(0, 5, 1))
+plt.show()
+```
+
+As you can see, we can adjust the bin boundaries by passing a list of breaks into the bins parameter. This is much preferred over passing an integer value, which specifies the number of bins.
+
+We can change the alignment by changing our boundaries:
+
+```{python}
+plt.clf()
+
+plt.hist(x, bins=np.arange(50, 75, 5) - 2.5) # this centers the bins instead
+plt.xticks(np.arange(50, 75, 5))
+plt.yticks(np.arange(0, 5, 1))
+plt.show()
+```
+
+Just for fun, we can also specify varied bin widths
+
+```{python}
+plt.clf()
+
+plt.hist(x, bins=[45, 50, 60, 65, 70, 75])
+plt.xticks(np.arange(50, 75, 5))
+plt.yticks(np.arange(0, 5, 1))
+plt.show()
+```
+
+By default, histograms are done using frequency counts. We can draw relative frequency histograms:
+
+```{python}
+plt.clf()
+
+prices = [379, 425, 450, 450, 499, 529, 535, 535, 545, 599, 665, 675, 699, 699, 725, 725, 745, 799]
+plt.hist(prices, bins=np.arange(300, 800, 100), weights=np.zeros_like(prices) + 1 / len(prices))
+plt.show()
+```
+
+And density histograms:
+
+```{python}
+plt.clf()
+
+plt.hist(prices, bins=np.arange(300, 800, 100), weights=np.zeros_like(prices) + 1 / (len(prices) * 100)) # 100 is the bin width
+plt.yticks(np.arange(0, 0.004, 0.001))
+plt.show()
+```
+
+Be careful interpreting a similar histogram with density=True, as it does not yield the same graph as shown in the lecture notes. It uses a different computational method, although the density overlay is still the same.
+
+```{python}
+plt.clf()
+
+plt.hist(prices, bins=np.arange(300, 800, 100), density=True)
+plt.yticks(np.arange(0, 0.004, 0.001))
+plt.show()
+```
+
+We can also draw cumulative frequency histograms (though they're a little harder):
+
+```{python}
+plt.clf()
+
+res = stats.cumfreq(prices, numbins=5, defaultreallimits=(300, 800))
+plt.bar(np.arange(300, 800, 100) + 50, res.cumcount, width=res.binsize)
+plt.yticks(np.arange(0, 18, 2))
+plt.show()
+```
+
+Let's visualize the tl;dr graph on EDAV now:
+
+```{r}
+require(Sleuth3)
+# write.csv(Sleuth3::case0201, 'finches.csv')
+```
+
+```{python}
+plt.clf()
+
+finches = pd.read_csv('../data/finches.csv')
+
+fg = sns.FacetGrid(finches, col='Year', col_wrap=2)
+fg.map(sns.distplot, 'Depth', norm_hist=True)
+
+plt.subplots_adjust(top=0.7)
+fg.fig.suptitle('Faceted histogram with density overlay')
+plt.show()
+```
+
+As mentioned earlier, be careful interpreting the density bar values, as they are computed differently.

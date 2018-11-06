@@ -1,0 +1,103 @@
+---
+title: "Heatmaps"
+author: "Alex Kong (alk2225)"
+date: "11/5/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE, tidy=FALSE)
+```
+
+```{r}
+require(tidyverse)
+require(reticulate)
+path_to_python <- "/Library/Frameworks/Python.framework/Versions/3.7/bin/python3"
+use_python(path_to_python, required=TRUE)
+```
+
+```{r}
+require(GDAdata)
+# write.csv(SpeedSki, 'speedski.csv')
+```
+
+Interestingly, matplotlib comes with a hexbin function which draws a hexagonal heatmap using tidied data.
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.clf()
+
+speedski = pd.read_csv('../data/speedski.csv').drop(columns='Unnamed: 0')
+
+plt.hexbin(speedski.Year, speedski.Speed, cmap=plt.cm.YlOrRd_r, gridsize=10)
+cb = plt.colorbar()
+cb.set_label('counts')
+
+plt.title('Hexmap of attained speed ranges per year')
+plt.xlabel('Year')
+plt.ylabel('Speed')
+plt.show()
+```
+
+We need to be a little more creative for a square heatmap (which we'll accomplish via binning and finalize using Matplotlib.imshow):
+
+```{python}
+print('Minimum speedski year is: {}'.format(speedski.Year.min())) # a pretty hacky way to see what we'll be working with
+print('Maximum speedski year is: {}'.format(speedski.Year.max()))
+print('Minimum speedski speed is: {}'.format(speedski.Speed.min()))
+print('Maximum speedski speed is: {}'.format(speedski.Speed.max()))
+```
+
+By the way, we need to bin because otherwise there will be exactly one of each unique speed-year pair. geom_bin2d implicitly does this, sadly neither matplotlib's imshow nor seaborn's heatmap does not.
+
+```{python}
+plt.clf()
+
+divisions_year = [x for x in range(1952, 1995 + 5 - 1995 % 5 + 1, 5)]
+labels_year = divisions_year[:len(divisions_year) - 1] # don't include the last year as that is just the cutoff for the last bin
+speedski['binned_year'] = pd.cut(speedski['Year'], bins=divisions_year, labels=labels_year)
+
+divisions_speed = [x for x in range(160, 212 + 8 - 212 % 8 + 1, 8)]
+labels_speed = divisions_speed[:len(divisions_speed) - 1]
+speedski['binned_speed'] = pd.cut(speedski['Speed'], bins=divisions_speed, labels=labels_speed)
+
+to_visualize = speedski[['binned_year', 'binned_speed']].dropna(how='any')
+to_visualize['binned_year'] = to_visualize['binned_year'].astype(float)
+to_visualize['binned_speed'] = to_visualize['binned_speed'].astype(float)
+to_visualize['count'] = 1.0
+
+to_visualize_group = to_visualize.groupby(['binned_year', 'binned_speed']).sum().reset_index()
+to_visualize_group = to_visualize_group.astype(int)
+to_visualize_pivot = to_visualize_group.pivot('binned_speed', 'binned_year', 'count')
+to_visualize_pivot.fillna(0.0, inplace=True)
+to_visualize_pivot = to_visualize_pivot.astype(int)
+print(to_visualize_pivot)
+
+plt.imshow(to_visualize_pivot, cmap='hot', interpolation='nearest')
+plt.colorbar().remove()
+cb = plt.colorbar()
+cb.set_label('counts')
+plt.show()
+```
+
+By the way, I could do the same in seaborn (with annotation support!):
+
+```{python}
+plt.clf()
+sns.heatmap(to_visualize_pivot, annot=True, linewidths=0.5)
+plt.show()
+```
+
+Seaborn, interestingly, does have a hex heatmap with support for tidydata, unfortunately it is hidden in the documentation of jointplot...
+
+```{python}
+plt.clf()
+sns.jointplot(speedski['Speed'], speedski['Year'], kind='hex', height=5, color='#FF0000')
+plt.show()
+```
+
+The crazy documentation and inconsistent requirements for heatmaps in Python gives R a huge, huge advantage in this regard. In the interest of time (and simplicity, and the due date haha!), I will not draw the tl;dr example, as it is not a trivial task (neither have many of the other "all-in-ones" to be honest, but at least they're somewhat decipherable).

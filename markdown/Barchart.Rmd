@@ -1,0 +1,142 @@
+---
+title: "Bar Charts"
+author: "Alex Kong"
+date: "11/3/2018"
+output: html_document
+---
+
+Let's start off with the simple example as indicated on the EDAV website
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE, tidy=FALSE)
+```
+
+```{r}
+require(tidyverse)
+require(reticulate)
+path_to_python <- "/Library/Frameworks/Python.framework/Versions/3.7/bin/python3"
+use_python(path_to_python, required=TRUE)
+```
+
+We're going to use HairEyeColor like the EDAV website to attempt to duplicate the graphs:
+
+```{r}
+colors <- as.data.frame(HairEyeColor)
+
+# just female hair color, using dplyr
+colors_female_hair <- colors %>%
+  filter(Sex == "Female") %>%
+  group_by(Hair) %>%
+  summarise(Total = sum(Freq))
+
+# take a look at data
+head(colors_female_hair)
+
+# write.csv(colors, file='hair_colors.csv') # more in the README about why I've done it this way
+```
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+colors = pd.read_csv('../data/hair_colors.csv')
+colors.drop(columns='Unnamed: 0', inplace=True)
+print(colors)
+```
+
+Here's a little Python data wrangling 101 for you.
+
+```{python}
+female_colors = colors.loc[colors.Sex == 'Female'].groupby(colors.Hair).sum().reset_index()
+print(female_colors)
+```
+
+The bar chart is fairly easy to draw in Python. I love the colors!
+
+```{python}
+plt.clf()
+
+_ = female_colors.plot.bar(x='Hair', y='Freq')
+_ = plt.title('Bar Graph Using matplotlib in Python')
+plt.legend().set_visible(False)
+plt.show()
+```
+
+We can also flip the orientation.
+
+```{python}
+plt.clf()
+
+_ = female_colors.plot.barh(x='Hair', y='Freq')
+_ = plt.title('Bar Graph Using matplotlib in Python')
+plt.legend().set_visible(False)
+plt.show()
+```
+
+Keep in mind best visualization techniques.
+
+```{python}
+plt.clf()
+
+female_colors.sort_values(by='Freq', ascending=False, inplace=True) # dealing with nominal categories, so sort by descending value
+_ = female_colors.plot.bar(x='Hair', y='Freq')
+_ = plt.title('Bar Graph Using matplotlib in Python')
+plt.legend().set_visible(False)
+plt.show()
+```
+
+Faceting in matplotlib is much harder than in ggplot. Here's one way to do it.
+
+```{python}
+plt.clf()
+
+hair_colors = colors.Hair.unique()
+fig, ax = plt.subplots(nrows=2, ncols=2)
+
+for i, group in enumerate(hair_colors):
+  colors.loc[colors.Hair == group].groupby(colors.Sex).sum().reset_index().plot.bar(x='Sex', y='Freq', ax=ax[i // 2][i % 2])
+
+plt.show()
+```
+
+However, seaborn's FacetGrid IMO makes it much little easier.
+
+```{python}
+plt.clf()
+
+fg = sns.FacetGrid(colors, col='Hair', col_wrap=2)
+fg.map(sns.barplot, 'Sex', 'Freq', estimator=sum, ci=None)
+plt.subplots_adjust(top=0.9)
+fg.fig.suptitle('Faceted Seaborn barplot')
+plt.show()
+```
+
+```{r}
+require(datasets)
+# write.csv(as.data.frame(Titanic), 'titanic.csv')
+```
+
+Let's try and generate the tl;dr barchart graph. It's not an easy task...
+
+```{python}
+plt.clf()
+
+titanic = pd.read_csv('../data/titanic.csv').drop(columns='Unnamed: 0')
+ship_grouped = titanic.groupby([titanic.Class, titanic.Sex, titanic.Survived]).sum().reset_index()
+print(ship_grouped)
+
+fg = sns.FacetGrid(ship_grouped, col='Class', col_wrap=2)
+fg.map(sns.barplot, 'Survived', 'Freq', 'Sex', palette=['red', 'green'], estimator=sum, ci=None)
+
+for ax in fg.axes:
+  for p in ax.patches:
+    ax.annotate("%.2f" % p.get_height(), (p.get_x() + p.get_width() / 2., p.get_height()),
+                 ha='center', va='center', fontsize=11, color='gray', xytext=(0, 8),
+                 textcoords='offset points') # taken from https://stackoverflow.com/questions/45946970/displaying-of-values-on-barchart
+
+plt.legend().set_visible(True)
+plt.show()
+```
+
+The preceding is absolutely not perfect and absolutely much easier to do in R!!!

@@ -1,0 +1,100 @@
+---
+title: "Mosaic Plots"
+author: "Alex Kong (alk2225)"
+date: "11/5/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE, tidy=FALSE)
+```
+
+```{r}
+require(tidyverse)
+require(reticulate)
+path_to_python <- "/Library/Frameworks/Python.framework/Versions/3.7/bin/python3"
+use_python(path_to_python, required=TRUE)
+```
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+from statsmodels.graphics.mosaicplot import mosaic # no matplotlib or seaborn support for mosaic yet, probably cause statsmodels already has a decent library for doing so
+```
+
+Sadly, the mosaic library does not support the Freq column, we have to expand it first and then visualize:
+
+```{python}
+df = pd.read_csv('~/Desktop/RStuff/data/icecream.csv')
+df_combined = pd.DataFrame()
+
+for index, row in df.iterrows():
+  for num_times in range(row['Freq']):
+    df_combined = df_combined.append(row[['Age', 'Favorite', 'Music']])
+    
+print(df_combined)
+
+mosaic(df_combined, ['Age'])
+plt.show()
+```
+
+Now we're going to draw a one-cut mosaic plot...
+
+```{python}
+plt.clf()
+
+mosaic(df_combined, ['Age'], horizontal=False)
+print(mosaic(df_combined, ['Age'], horizontal=False))
+plt.show()
+```
+
+...and a two cut mosaic plot...
+
+```{python}
+plt.clf()
+
+mosaic(df_combined, ['Age', 'Music'], horizontal=False)
+plt.show()
+```
+
+...and a three cut mosaic plot...
+
+```{python}
+plt.clf()
+
+mosaic(df_combined, ['Age', 'Music', 'Favorite'], horizontal=False)
+plt.show()
+```
+
+Although the syntax is much easier (split paameter is a list of ['first_split_col', 'second_split_col', ...]), it's not as easy to see the split width (which does help in identifying how the splits were made). Also, it is more difficult to fine tune the parameters.
+
+Say I want to change the color:
+
+```{python}
+plt.clf()
+
+props = {}
+
+props[('young', 'classical')] = {'color': '#0000FF'}
+props[('young', 'rock')] = {'color': '#0000CC'}
+props[('old', 'classical')] = {'color': '#FF00FF'}
+props[('old', 'rock')] = {'color': '#CC00CC'}
+
+mosaic(df_combined, ['Age', 'Music'], horizontal=False, properties=props)
+
+plt.show()
+```
+
+We can also change the gap length between splits:
+
+```{python}
+plt.clf()
+
+mosaic(df_combined, ['Age', 'Music'], horizontal=False, gap=0.05)
+plt.show()
+```
+
+They say anything's possible, but that doesn't necessarily mean it's worth all of the effort to learn everything that's possible. Python's mosaic plots are much more difficult to fine tune than R's mosaic plots, as some of the above examples show. Please consult the documentation: https://www.statsmodels.org/dev/generated/statsmodels.graphics.mosaicplot.mosaic.html if you would like to learn more.

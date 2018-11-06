@@ -1,0 +1,71 @@
+---
+title: "Scatterplots"
+author: "Alex Kong (alk2225)"
+date: "11/5/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE, tidy=FALSE)
+```
+
+```{r}
+require(tidyverse)
+require(reticulate)
+path_to_python <- "/Library/Frameworks/Python.framework/Versions/3.7/bin/python3"
+use_python(path_to_python, required=TRUE)
+```
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
+
+Let's duplicate some of the EDAV scatterplot results:
+
+```{python}
+plt.clf()
+
+speedski = pd.read_csv('speedski.csv').drop(columns='Unnamed: 0')
+plt.scatter(speedski['Year'], speedski['Speed'])
+plt.xlabel('Year', labelpad=0.4)
+plt.ylabel('Speed', labelpad=0.01)
+plt.show()
+```
+
+As with R scatterplots, consider alpha blending or jittering to prevent overlap.
+
+```{python}
+plt.clf()
+
+wide_x = np.append(np.random.normal(loc=100, scale=2, size=50), np.random.normal(loc=10, scale=2, size=50)) # loc is mean, scale is standard deviation
+wide_y = np.random.normal(loc=5, scale=2, size=100)
+
+print(wide_x.tolist())
+print(wide_y.tolist())
+
+plt.scatter(wide_x.tolist(), wide_y.tolist())
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Example of scaling data in Python', pad=0.5)
+plt.show()
+```
+
+Like R, we can add contour lines to our scatterplots (using Seaborn):
+
+```{python}
+sns.jointplot('Year', 'Speed', data=speedski, color='k').plot_joint(sns.kdeplot)
+plt.show()
+```
+
+And we can plot scatterplot matrices as well:
+
+```{python}
+iris = pd.read_table('../data/iris.data', sep=',', names=['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species'])
+sns.pairplot(iris, hue="species")
+plt.show()
+```
+
+The scatterplot matrix in seaborn is one of the only (if not the only) visualization techniques I prefer to use Python over R for due to its ease of use and prettier display IMO. Really a huge fan of the density curves, though histograms would also be acceptable.

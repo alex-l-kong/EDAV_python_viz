@@ -1,0 +1,83 @@
+---
+title: "Boxplots"
+author: "Alex Kong (alk2225)"
+date: "11/3/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE, tidy=FALSE)
+```
+
+```{r}
+require(tidyverse)
+require(reticulate)
+path_to_python <- "/Library/Frameworks/Python.framework/Versions/3.7/bin/python3"
+use_python(path_to_python, required=TRUE)
+```
+
+We're going to try and duplicate the airquality graphs on EDAV.
+
+```{r}
+require(datasets)
+# write.csv(airquality, 'airquality.csv')
+```
+
+Box plots are also generally easier to draw, though I don't like the graphics as much.
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.clf()
+
+air_quality = pd.read_csv('../data/airquality.csv').drop(columns='Unnamed: 0')
+air_quality.boxplot(column=list(air_quality.columns.values))
+plt.show()
+```
+
+Flip orientation:
+
+```{python}
+plt.clf()
+
+air_quality.boxplot(column=list(air_quality.columns.values), vert=False)
+plt.show()
+```
+
+```{r}
+# write.csv(chickwts, 'chickwts.csv')
+```
+
+Let's try to duplicate the tl;dr graph on EDAV (again, not an easy task...)
+
+```{python}
+plt.clf()
+chickwts = pd.read_csv('../data/chickwts.csv').drop(columns='Unnamed: 0')
+
+chickwts_agg = pd.DataFrame({col:vals['weight'] for col, vals in chickwts.groupby('feed')})
+chickwts_sorted = chickwts_agg.median().sort_values() # taken from https://stackoverflow.com/questions/21912634/how-can-i-sort-a-boxplot-in-pandas-by-the-median-values
+chickwts_final = chickwts_agg[chickwts_sorted.index]
+
+bx = chickwts_final.boxplot(patch_artist=True, boxprops={'facecolor': '#AAAAAA', 'color': '#FFCC00', 'linestyle': '-'}, medianprops={'color': 'red', 'linestyle': '-'}, return_type='dict')
+[item.set_color('r') for item in bx['boxes']] # taken from https://stackoverflow.com/questions/35160956/pandas-boxplot-set-color-and-properties-for-box-median-mean
+
+# see the "Boxplots" section of http://nbviewer.jupyter.org/gist/fonnesbeck/5850463 for additional info about how to jitter
+# yes, I know, it's not perfect (the boxes overlay the points)
+# but that's Matplotlib for you...
+chickwts_temp = chickwts_sorted.reset_index()
+chickwts_temp.columns = ['feed', 'median']
+
+for cat in list(chickwts_final.columns.values):
+  y = chickwts.weight[chickwts.feed == cat].dropna()
+  index = chickwts_temp.index[chickwts_temp['feed'] == cat].values[0]
+  
+  x = np.random.normal(index + 1, 0.04, size=len(y))
+  plt.plot(x, y, 'b.', alpha=0.7)
+
+plt.show()
+```
+
+Anyone have a better and easier way to do it?

@@ -1,0 +1,76 @@
+---
+title: "Ridgeline Plots"
+author: "Alex Kong (alk2225)"
+date: "11/5/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE, tidy=FALSE)
+```
+
+```{r}
+require(tidyverse)
+require(reticulate)
+path_to_python <- "/Library/Frameworks/Python.framework/Versions/3.7/bin/python3"
+use_python(path_to_python, required=TRUE)
+```
+
+```{r}
+library(datasets)
+# write.csv(Orange, '../data/orange.csv')
+```
+
+We're going to see if we can duplicate the results for the Orange dataset:
+
+```{python}
+from __future__ import unicode_literals # need to import this for joyplots to work
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from joypy import joyplot
+
+orange = pd.read_csv('../data/orange.csv').drop(columns='Unnamed: 0')
+print(orange)
+```
+
+Ridgeline plots in Python are implemented using joyplot from the joypy library:
+
+```{python}
+joyplot(orange, by='Tree', column='age', figsize=(5, 8))
+plt.title('Joyplot example', pad=0.5)
+plt.show()
+```
+
+We can further customize our joyplot:
+
+```{python}
+joyplot(orange, by='Tree', column='age', figsize=(5, 8), overlap=3, colormap=plt.cm.summer_r) # change the overlap and color scheme
+plt.title('Joyplot example', pad=0.5)
+plt.show()
+```
+
+Let's try the same on OrchardSprays:
+
+```{r}
+# write.csv(OrchardSprays, 'orchard_sprays.csv')
+```
+
+```{python}
+orchard_sprays = pd.read_csv('../data/orchard_sprays.csv').drop(columns='Unnamed: 0')
+joyplot(orchard_sprays, by='treatment', column='decrease', figsize=(5, 8), overlap=6, colormap=plt.cm.summer_r) # change the overlap and color scheme
+plt.show()
+```
+
+As you can see, unlike geom_density_ridges, plots are ordered by increasing peak value from top to bottom.
+
+Sadly, Python joyplots are fairly limited in their scope. An alternative would be to draw a bunch of density plots on top of each other using matplotlib or seaborn: https://stackoverflow.com/questions/17614499/frequency-trail-in-matplotlib.
+
+However, joyplots can do this (the Unknown Pleasures covor inspiration):
+
+```{python}
+# technically, there's supposed to be no fill, but I really like the blue overlay for each plot
+joyplot(orchard_sprays, by='treatment', column='decrease', figsize=(5, 8), kind='counts', background='k', linecolor='w', overlap=4)
+plt.show()
+```
