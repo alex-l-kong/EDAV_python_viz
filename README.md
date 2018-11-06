@@ -4,11 +4,11 @@
 
 First of all, welcome! We've been visualizing using R this semester and are in the process of transitioning to D3. These are solid visualization choices, and coming from Python, I have been pleasantly surprised. Visualization in Python has played second fiddle to R for a long time, and this class has only served to highlight how far visualization libraries such as matplotlib and seaborn need to come to match R's community-oriented, centralized, flexible, and overall, easy approach to data visualization.  
   
-However, I also believe that matplotlib and seaborn, among other Python visualization tools, have their own little neat quirks to offer, even if the documentation might be (it's subjective) confusing as hell (or impossible to find) and it takes a lot more fine tuning for you to get the desired ridgeline plot or histogram. Also, according to a Stack Overflow poll, Python appears to be trending upwards in popularity vs R (though perhaps I should scale this time-series based plot to 1% first before I make that conclusion...):  
+However, I also believe that matplotlib and seaborn, among other Python visualization tools, have their own little neat quirks to offer, even if the documentation might be (it's subjective) confusing as hell (or impossible to find) and it takes a lot more fine tuning for you to get the desired ridgeline plot or histogram. Also, according to a Stack Overflow poll, Python appears to be trending upwards in popularity vs R, at least in terms of discussion (though perhaps I should scale this time-series based plot to 1% first before I make that conclusion...):  
   
 ![Alt text](./whoo_python.png "Python > R")  
   
-Whatever the case, Python is a main player in the data science realm, and thus, you should expect to have to learn matplotlib and seaborn. I'm here to help you get started! Hopefully you find this tutorial as exciting as I did making it. Let's get started!
+Whatever the case, Python is a main player in the data science realm, and thus, you should expect to have to learn matplotlib and seaborn. I'm here to help you get started! Hopefully you find this tutorial as exciting as I did making it. Let's begin!
 
 ## Disclaimers
 
