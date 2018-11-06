@@ -14,10 +14,10 @@ Whatever the case, Python is a main player in the data science realm, and thus, 
 
 First of all, I wanted to lay out some things you should know before you read:
 * Yes, I know there might be a more efficient way to do it in Python. Keep in mind that this is a tutorial about visualization, not optimization.
-* Yes, I know there might be a neat little lambda function, list comprehension, etc. I could have substituted. Not everyone knows Python very well yet; this is for beginners and thus I wanted to keep this as simple as I could possibly make it (plaese [comment](#comments/additions/modifications) if anything did confuse you though)
-* There is more than one way to visualize in Python, even within the realms of matplotlib and seaborn. Although I do appreciate [comment](#comments/additions/modifications), please refrain from debating over which visualization is better
+* Yes, I know there might be a neat little lambda function, list comprehension, etc. I could have substituted. Not everyone knows Python very well yet; this is for beginners and thus I wanted to keep this as simple as I could possibly make it (plaese [comment](#commenting-and-editing) if anything did confuse you though)
+* There is more than one way to visualize in Python, even within the realms of matplotlib and seaborn. Although I do appreciate [comment](#commenting-and-editing), please refrain from debating over which visualization is better
 
-## Comments/Additions/Modifications
+## Commenting and Editing
 
 What I've included here is just the start. I've shared this repo (and plan to include a link to it on the EDAV page) to allow others to comment/add/modify it as a dynamic way of exchanging Python visualization tidbits with each other (like a crude version of the EDAV homepage right now). I would very much appreciate your continued input! Please feel free to add or modify as you please!  
   
@@ -57,13 +57,6 @@ You run the Markdown files as we've learned in class. Hopefully at this point yo
 RStudio Python blocks don't exactly work like Jupyter notebooks. For one, you actually need to call plt.show(). Also, be careful with chart formatting; be sure to call plt.clf() before each Python block!  
   
 Well, that's pretty much it! As mentioned earlier, if you have any issues getting Python set up/interfacing Python with RStudio/etc., please feel free to [email](#contact) me!  
-
-## My Conclusions
-
-* Guido van Rossum developed Python to make programming easier. Sadly, that hasn't really translated to data science yet.
-* The R community, well, feels more like a community. You can see it in the effort they put into documenting their work and their discussions.
-* I believe Python suffers in part because it is not a niche programming language. R has been around much longer as a data science tool, whereas Python, despite offering very good machine learning/web scraping/NLP libraries, is much newer in the data science field. So it's community is much more youthful in that regard, whereas R's is much more experienced.
-* Any other observations? Place them here!
   
 ## Contact
 
