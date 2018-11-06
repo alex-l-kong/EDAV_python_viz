@@ -14,7 +14,7 @@ Whatever the case, Python is a main player in the data science realm, and thus, 
 
 First of all, I wanted to lay out some things you should know before you read:
 * Yes, I know there might be a more efficient way to do it in Python. Keep in mind that this is a tutorial about visualization, not optimization.
-* Yes, I know there might be a neat little lambda function, list comprehension, etc. I could have substituted. Not everyone knows Python very well yet; this is for beginners and thus I wanted to keep this as simple as I could possibly make it (plaese [comment](##Comment) if anything did confuse you though)
+* Yes, I know there might be a neat little lambda function, list comprehension, etc. I could have substituted. Not everyone knows Python very well yet; this is for beginners and thus I wanted to keep this as simple as I could possibly make it (plaese [comment](#Comment) if anything did confuse you though)
 * There is more than one way to visualize in Python, even within the realms of matplotlib and seaborn. Although I do appreciate [comment](##Comment), please refrain from debating over which visualization is better
 
 ## Comments/Additions/Modifications
@@ -25,7 +25,7 @@ One thing I do ask is to please make sure all discussions and changes are produc
 * do not discuss/post off-topic issues
 * do not argue/debate
 * do not plagiarize (for your own benefit)
-* if you have any reservations before posting anything, [email](##Contact) me first to check
+* if you have any reservations before posting anything, [email](#Contact) me first to check
 * do not, absolutely do not, discuss/post anything offensive
 
 If we can all adhere to these basic rules, then I believe we can set up a great collaborative resource not only for our class, but future ones as well.
@@ -56,7 +56,7 @@ You run the Markdown files as we've learned in class. Hopefully at this point yo
   
 RStudio Python blocks don't exactly work like Jupyter notebooks. For one, you actually need to call plt.show(). Also, be careful with chart formatting; be sure to call plt.clf() before each Python block!  
   
-Well, that's pretty much it! As mentioned earlier, if you have any issues getting Python set up/interfacing Python with RStudio/etc., please feel free to [email](##Contact) me!  
+Well, that's pretty much it! As mentioned earlier, if you have any issues getting Python set up/interfacing Python with RStudio/etc., please feel free to [email](#Contact) me!  
 
 ## My Conclusions
 
