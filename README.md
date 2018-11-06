@@ -14,8 +14,8 @@ Whatever the case, Python is a main player in the data science realm, and thus, 
 
 First of all, I wanted to lay out some things you should know before you read:
 * Yes, I know there might be a more efficient way to do it in Python. Keep in mind that this is a tutorial about visualization, not optimization.
-* Yes, I know there might be a neat little lambda function, list comprehension, etc. I could have substituted. Not everyone knows Python very well yet; this is for beginners and thus I wanted to keep this as simple as I could possibly make it (plaese [comment](#comment) if anything did confuse you though)
-* There is more than one way to visualize in Python, even within the realms of matplotlib and seaborn. Although I do appreciate [comment](#comment), please refrain from debating over which visualization is better
+* Yes, I know there might be a neat little lambda function, list comprehension, etc. I could have substituted. Not everyone knows Python very well yet; this is for beginners and thus I wanted to keep this as simple as I could possibly make it (plaese [comment](#comments/additions/modifications) if anything did confuse you though)
+* There is more than one way to visualize in Python, even within the realms of matplotlib and seaborn. Although I do appreciate [comment](#comments/additions/modifications), please refrain from debating over which visualization is better
 
 ## Comments/Additions/Modifications
 
